@@ -124,6 +124,14 @@ export default {
       });
     },
   },
+  watch: {
+    // eslint-disable-next-line func-names
+    'saveHotel.elp': function (value) {
+      if (value > 12) {
+        this.$router.push('/hotels');
+      }
+    },
+  },
   mounted() {
     this.getData();
     document.querySelectorAll('.form-steps').forEach((form) => {
