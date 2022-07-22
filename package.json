@@ -17,6 +17,7 @@
     "lodash": "^4.17.21",
     "lottie-web": "^5.9.6",
     "moment": "^2.29.4",
+    "node-sass": "^7.0.1",
     "secure-ls": "^1.2.6",
     "simplebar": "^5.3.8",
     "simplebar-vue3": "^0.1.6",
