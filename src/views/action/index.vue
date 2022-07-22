@@ -8,13 +8,9 @@ import {
 } from 'lodash';
 import {
   computed,
-  onMounted,
+  onBeforeMount,
   reactive,
 } from 'vue';
-import appAxios from '@/utils/appAxios';
-import infoVue from './store/info.vue';
-import roomVue from './store/room.vue';
-import marketVue from './store/market.vue';
 
 const data = reactive({
   title: 'Hotels',
@@ -34,37 +30,33 @@ const searchHotels = computed(() => {
   return data.hotels;
 });
 
-function getHotel(id) {
+async function getHotel(id) {
   if (id == null) {
     data.hotels = [];
     if (state.getters['hotel/getHotel']) {
-      data.hotels = cloneDeep(state.getters['hotel/getHotel']);
+      data.hotels = await cloneDeep(state.getters['hotel/getHotel']);
     } else {
-      appAxios.appAxios.get('/hotel').then((response) => {
-        response.data.forEach((hotel) => {
-          state.commit('hotel/setHotel', hotel);
-        });
-        data.hotels = cloneDeep(response.data);
-      });
+      await state.dispatch('market/initApp');
+      await state.dispatch('hotel/initApp');
+      data.hotels = await cloneDeep(state.getters['hotel/getHotel']);
     }
   } else {
     const i = data.hotels.findIndex((x) => x.id === id);
-    data.hotels[i] = cloneDeep(state.getters['hotel/getHotel']).find((x) => x.id === id);
+    data.hotels[i] = cloneDeep(state.getters['hotel/getHotel'].find((x) => x.id === id));
   }
   data.editData = null;
   data.editType = '';
+  data.hotels = data.hotels.map((x) => {
+    const y = x;
+    if ('selectedContract' in x) {
+      delete y.selectedContract;
+    }
+    return y;
+  });
 }
-onMounted(() => {
+onBeforeMount(() => {
   getHotel(null);
 });
-
-function listHotel(obj) {
-  return Object.fromEntries(Object.entries(obj).filter(([_, v]) => v != null));
-}
-
-function listHotelItem(obj, i) {
-  return Object.values(obj).slice(((i - 1) * 3), (i * 3));
-}
 
 function edit(i, type) {
   data.editData = null;
@@ -84,37 +76,40 @@ function edit(i, type) {
   <div class="row">
     <div class="card">
       <div class="card-body">
-        <div class="div div-borderless div-nowrap">
-          <div class="row">
-            <h5>Hotel</h5>
-          </div>
-          <div v-for="hotel in searchHotels" :key="hotel" class="border-bottom row">
-            <div class="col-6 mb-2">
-              <div class="row" v-for="i in Math.ceil((Object.keys(listHotel(hotel.info)).length)/3)" :key="i">
-                <div v-for="item in listHotelItem(listHotel(hotel.info), i)" :key="item" class="col-4 border border-success p-1">{{item}}</div>
-              </div>
-            </div>
-            <div class="offset-1 col-5">
-              <div class="row">
-                <div class="col-4">
-                  <div class="row me-2 mb-2">
-                    <button class="btn btn-primary" @click="edit(hotel, 'list')" data-bs-toggle="modal" data-bs-target=".bs-example-modal-xl">Aksiyonlar</button>
-                  </div>
-                  <div class="row me-2">
-                    <button class="btn btn-primary" @click="edit(hotel, 'new')" data-bs-toggle="modal" data-bs-target=".bs-example-modal-xl">Yeni Aksiyon</button>
-                  </div>
+        <!-- Tables Without Borders -->
+<table class="table table-borderless table-nowrap">
+    <thead>
+        <tr>
+            <th scope="col">Id</th>
+            <th scope="col">Name</th>
+            <th scope="col">Tel</th>
+            <th scope="col">First Mail</th>
+            <th scope="col">Second Mail</th>
+            <th scope="col">Status</th>
+            <th scope="col"></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr v-for="[i, hotel] in searchHotels.entries()" :key="hotel">
+            <th scope="row">{{i + 1}}</th>
+            <td><a role="presentation" class="link-primary" data-bs-toggle="modal" data-bs-target=".bs-example-modal-xl">{{hotel.info.name}}</a></td>
+            <td><a :href="['tel:+'+hotel.info.tel]">{{hotel.info.tel}}</a></td>
+            <td><a :href="['mailto:'+hotel.info.firstMail]">{{hotel.info.firstMail}}</a></td>
+            <td><a :href="['mailto:'+hotel.info.secondMail]">{{hotel.info.secondMail}}</a></td>
+            <td><span class="badge badge-soft-success">Active</span></td>
+            <td>
+                <div class="hstack gap-3 fs-15">
+                    <a @click="edit(hotel, 'list')"  role="presentation" class="link-primary" data-bs-toggle="modal" data-bs-target=".bs-example-modal-xl"><i class="ri-add-line"></i></a>
+                    <a @click="edit(hotel, 'list')"  role="presentation" class="link-primary" data-bs-toggle="modal" data-bs-target=".bs-example-modal-xl"><i class="ri-list-check"></i></a>
                 </div>
-              </div>
-            </div>
-          </div>
-        </div>
+            </td>
+        </tr>
+    </tbody>
+</table>
       </div>
     </div>
   </div>
   <modal>
-    <infoVue v-if="data.editType === 'new'" :data="data.editData" :name="data.editData.info.name" :close="getHotel" :next="edit"/>
-    <roomVue v-if="data.editType === 'room'" :data="data.editData" :close="getHotel" :next="edit"/>
-    <marketVue v-if="data.editType === 'market'" :data="data.editData" :close="getHotel" :next="edit"/>
   </modal>
 </Layout>
 </template>
