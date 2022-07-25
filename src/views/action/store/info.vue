@@ -1,6 +1,6 @@
 <template>
 <div class="row g-3">
-  <h4 class="col-4 d-flex justify-content-center pt-3 text-success">{{name}}</h4>
+  <h4 class="col-4 d-flex justify-content-center pt-3 text-success">{{hotel.info.name}}</h4>
   <div class="col-sm-4">
     <label class="form-label">Action Date</label>
     <flatpickr v-model="action.actionDate" :config="config" class="form-control flatpickr-input form-control-sm" />
@@ -50,6 +50,18 @@
     </div>
   </div>
 </div>
+  <h6>Select Market:</h6>
+<div class="row border-bottom border-success mb-1">
+  <div class="col-1"><b>Seç</b></div>
+  <div class="col-5"><b>Market</b></div>
+  <div class="col-6"><b>Ülke</b></div>
+</div>
+<div class="row border-bottom border-primary mb-1" v-for="m in market" :key="m">
+<div class="col-1 d-flex align-items-center"><input type="checkbox" v-model="action.market" :value="m"/></div>
+<div class="col-5 d-flex align-items-center"><span>{{m.market.mainMarketName}} >> </span><span>{{m.market.mainMarketName}}</span></div>
+<div class="col-6 d-flex align-items-center"><span class="row"><span class="border-1 col-1" v-for="c in m.country" :key="c"><span :class="['fi fi-'+c.code]"></span><span>{{c.code.toUpperCase()}}</span></span></span></div>
+</div>
+
 <div class="col-lg-12 mt-2">
   <div class="hstack gap-2 justify-content-end">
     <button @click="close(hotel.id)" type="button" class="btn btn-light" data-bs-dismiss="modal"> Close </button>
@@ -61,6 +73,9 @@
 import flatpickr from 'vue-flatpickr-component';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import 'flatpickr/dist/flatpickr.css';
+import 'flag-icons/css/flag-icons.min.css';
+import { cloneDeep } from 'lodash';
+import store from '@/state';
 
 export default {
   components: {
@@ -70,6 +85,7 @@ export default {
   data() {
     // eslint-disable-next-line no-return-assign
     return {
+      hotel: cloneDeep(this.data),
       config: {
         wrap: true, // set wrap to true only when using 'input-group'
         altFormat: 'd/m/Y',
@@ -77,40 +93,10 @@ export default {
         altInput: true,
         dateFormat: 'Y-m-d',
       },
-      action: null,
-    };
-  },
-  computed: {
-    validation() {
-      let show = true;
-      show = this.action.type === null;
-      show = show === false ? show : this.action.salesDate.end === null && this.action.salesDate.end === null;
-      show = show === false ? show : this.action.checkInDate.end === null && this.action.checkInDate.end === null;
-      return show;
-    },
-  },
-  methods: {
-    changePeriod() {
-      console.log(this.action);
-    },
-    save() {
-      this.action.room = this.hotel.room.map((x) => ({
-        room_id: x._id,
-        purchasePrice: 0,
-        salesPrice: 0,
-      }));
-      'actions' in this.hotelData ? true : this.hotelData.actions = [];
-      this.hotel.actions.push(this.action);
-      this.next(this.hotel, 'room');
-    },
-  },
-  created() {
-    if ('actionSeries' in this.data) {
-      this.action = this.data;
-    } else {
-      this.action = {
+      action: {
         _id: 1,
         type: null,
+        market: [],
         country: [],
         room: [],
         stayAndArrival: true,
@@ -125,8 +111,44 @@ export default {
         },
         combine: false,
         actionDate: Date.now(),
-      };
-    }
+      },
+      markets: store.getters['market/getMarket'],
+      country: cloneDeep(store.getters['market/getCountry']),
+    };
+  },
+  computed: {
+    validation() {
+      let show = this.action.type === null;
+      show = show === false ? show : this.action.salesDate.end === null && this.action.salesDate.end === null;
+      show = show === false ? show : this.action.checkInDate.end === null && this.action.checkInDate.end === null;
+      return show;
+    },
+    market() {
+      return this.hotel.contract.map((c) => {
+        const returnData = {
+          contractId: c._id,
+          market: [],
+          country: [],
+        };
+        if (c.market.length > 0) {
+          returnData.market = this.markets.find((x) => c.market.includes(x._id));
+          returnData.country = this.country.filter((x) => c.country.includes(x._id));
+        } else {
+          returnData.market.mainMarketName = 'Ana Market Bulunamadı';
+          returnData.market.mainSubMarketName = 'Alt Market Bulunamadı';
+          returnData.country = this.country.filter((x) => c.country.includes(x._id));
+        }
+        console.log(returnData);
+        return returnData;
+      });
+    },
+  },
+  methods: {
+    changePeriod() {
+      console.log(this.action);
+    },
+    save() {
+    },
   },
 };
 </script>

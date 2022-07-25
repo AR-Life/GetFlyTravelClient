@@ -11,7 +11,6 @@ import {
   onBeforeMount,
   reactive,
 } from 'vue';
-import appAxios from '@/utils/appAxios';
 import editInfo from './edit/info.vue';
 import contractVue from './edit/contract.vue';
 import editPeriod from './edit/period.vue';
