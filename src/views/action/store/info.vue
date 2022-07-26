@@ -57,8 +57,8 @@
   <div class="col-6"><b>Ülke</b></div>
 </div>
 <div class="row border-bottom border-primary mb-1" v-for="m in market" :key="m">
-<div class="col-1 d-flex align-items-center"><input type="checkbox" v-model="action.market" :value="m"/></div>
-<div class="col-5 d-flex align-items-center"><span>{{m.market.mainMarketName}} >> </span><span>{{m.market.mainMarketName}}</span></div>
+<div class="col-1 d-flex align-items-center"><input type="checkbox" :id="m.contractId" v-model="action.contract" :value="m"/></div>
+<div class="col-5 d-flex align-items-center"><label :for="m.contractId"><span>{{m.market.mainMarketName}} >> </span><span>{{m.market.mainMarketName}}</span></label></div>
 <div class="col-6 d-flex align-items-center"><span class="row"><span class="border-1 col-1" v-for="c in m.country" :key="c"><span :class="['fi fi-'+c.code]"></span><span>{{c.code.toUpperCase()}}</span></span></span></div>
 </div>
 
@@ -94,8 +94,8 @@ export default {
         dateFormat: 'Y-m-d',
       },
       action: {
-        _id: 1,
         type: null,
+        contract: [],
         market: [],
         country: [],
         room: [],
@@ -138,7 +138,6 @@ export default {
           returnData.market.mainSubMarketName = 'Alt Market Bulunamadı';
           returnData.country = this.country.filter((x) => c.country.includes(x._id));
         }
-        console.log(returnData);
         return returnData;
       });
     },
@@ -148,6 +147,16 @@ export default {
       console.log(this.action);
     },
     save() {
+      console.log(this.action);
+      const country = [];
+      this.action.contract.map((x) => x.country.forEach((y) => {
+        country.push(y);
+      }));
+      this.action.market = this.action.contract.map((x) => x.market);
+      this.action.country = country;
+      this.action.contract = this.action.contract.map((x) => x.contractId);
+      console.log(this.action);
+      // this.next(this.hotel, this.action.type);
     },
   },
 };
