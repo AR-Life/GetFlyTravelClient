@@ -58,7 +58,7 @@
 </div>
 <div class="row border-bottom border-primary mb-1" v-for="m in market" :key="m">
 <div class="col-1 d-flex align-items-center"><input type="checkbox" :id="m.contractId" v-model="action.contract" :value="m"/></div>
-<div class="col-5 d-flex align-items-center"><label :for="m.contractId"><span>{{m.market.mainMarketName}} >> </span><span>{{m.market.mainMarketName}}</span></label></div>
+<div class="col-5 d-flex align-items-center"><label :for="m.contractId"><span>{{m.market.mainMarketName}} » </span><span>{{m.market.mainMarketName}}</span></label></div>
 <div class="col-6 d-flex align-items-center"><span class="row"><span class="border-1 col-1" v-for="c in m.country" :key="c"><span :class="['fi fi-'+c.code]"></span><span>{{c.code.toUpperCase()}}</span></span></span></div>
 </div>
 

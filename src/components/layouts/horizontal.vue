@@ -130,9 +130,9 @@ export default {
               </div>
             </li>
             <li class="nav-item">
-
               <router-link to="/actions" class="nav-link menu-link">
-                      <i class="ri-exchange-box-line"></i>{{ $t("t-actions") }}
+                      <i class="ri-exchange-box-line"></i>
+                     <span data-key="t-actions">  {{ $t("t-actions") }} </span>
                     </router-link>
             </li>
           </ul>

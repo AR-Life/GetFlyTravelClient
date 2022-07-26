@@ -35,8 +35,8 @@ File: Main Css File
 @import "variables";
 @import "theme-light";
 @import "theme-dark";
-body{
-    font-family: 'Poppins'!important;font-size: 13px;
+*{
+    font-family: 'Poppins';font-size: 14px;
 }
 // Structure
 @import "../../structure/topbar";
