@@ -156,7 +156,7 @@ export default {
       this.action.country = country;
       this.action.contract = this.action.contract.map((x) => x.contractId);
       console.log(this.action);
-      // this.next(this.hotel, this.action.type);
+      this.next(this.hotel, this.action.type);
     },
   },
 };
