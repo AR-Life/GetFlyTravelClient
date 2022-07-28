@@ -76,13 +76,13 @@ function edit(i, type) {
 <template>
 <Layout>
   <PageHeader :title="data.title" :items="data.items" />
-  <div class="row mb-2">
-    <div class="offset-10 col-2 ">
-      <input v-model="data.searchHotel" class="form-control" placeholder="search hotel" />
-    </div>
-  </div>
   <div class="row">
     <div class="card">
+      <div class="card-header row">
+        <div class="offset-10 col-2 ">
+      <input v-model="data.searchHotel" class="form-control" placeholder="search hotel" />
+    </div>
+      </div>
       <div class="card-body">
         <!-- Tables Without Borders -->
 <table class="table table-borderless table-nowrap">

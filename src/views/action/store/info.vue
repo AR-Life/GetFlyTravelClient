@@ -57,7 +57,7 @@
   <div class="col-6"><b>Ülke</b></div>
 </div>
 <div class="row border-bottom border-primary mb-1" v-for="m in market" :key="m">
-<div class="col-1 d-flex align-items-center"><input type="checkbox" :id="m.contractId" v-model="action.contract" :value="m"/></div>
+<div class="col-1 d-flex align-items-center"><input type="radio" :id="m.contractId" v-model="action.contract" :value="m"/></div>
 <div class="col-5 align-items-center d-flex"><table><tr v-for="marketInMarket in m.market" :key="marketInMarket"><td v-if="'subMarketName' in marketInMarket"><label :for="m.contractId"><span>{{marketInMarket.mainMarketName }} » </span><span>{{marketInMarket.subMarketName}}</span></label></td><td v-else><label :for="m.contractId"><span>Market Bulunamadı</span></label></td></tr></table></div>
 <div class="col-6 d-flex align-items-center"><span class="row"><span class="border-1 col-1" v-for="c in m.country" :key="c"><span :class="['fi fi-'+c.code]" :title="c.name"></span><span>{{c.code.toUpperCase()}}</span></span></span></div>
 </div>
@@ -95,9 +95,9 @@ export default {
       },
       action: {
         type: null,
-        contract: [],
-        market: [],
-        country: [],
+        contract: null,
+        market: null,
+        country: null,
         room: [],
         stayAndArrival: true,
         actionSeries: null,
@@ -111,6 +111,7 @@ export default {
         },
         combine: false,
         actionDate: Date.now(),
+        value: [],
       },
       markets: store.getters['market/getMarket'],
       country: cloneDeep(store.getters['market/getCountry']),
@@ -152,13 +153,9 @@ export default {
       console.log(this.action);
     },
     save() {
-      const country = [];
-      this.action.contract.map((x) => x.country.forEach((y) => {
-        country.push(y);
-      }));
-      this.action.market = this.action.contract.map((x) => x.market);
-      this.action.country = country;
-      this.action.contract = this.action.contract.map((x) => x.contractId);
+      this.action.market = this.action.contract.market;
+      this.action.country = this.action.contract.country;
+      this.action.contract = this.action.contract.contractId;
       this.hotel.action = this.action;
       this.next(this.hotel, this.action.type);
     },
