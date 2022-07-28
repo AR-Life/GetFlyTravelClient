@@ -126,7 +126,7 @@ function edit(i, type) {
     </div>
   </div>
   <modal>
-    <infoVue v-if="data.editType === 'info'" :data="data.editData" :next="edit"/>
+    <infoVue v-if="data.editType === 'info'" :data="data.editData" :next="edit" :close="getHotel"/>
     <normalVue v-if="data.editType === 'normal'" :data="data.editData" :next="edit"/>
   </modal>
 </Layout>
