@@ -54,7 +54,7 @@
                                             <div class="col-3 form-check form-switch form-switch-lg form-switch-success d-flex justify-content-center">
                                               <span>{{age.year ? 'year' : 'mount'}}</span>
                                             </div>
-                                            <div class="col-2 text-center">{{purchasePrice * age.calc}}/{{salesPrice * age.calc}} {{currency}}</div>
+                                            <div class="col-2 text-center">{{room.purchasePrice * age.calc}}/{{room.salesPrice * age.calc}} {{currency}}</div>
                                         </div>
                                     </div>
                                     <div v-else class="col-10">
@@ -62,7 +62,7 @@
                                             <div class="col-3">
                                                 <input v-model="it.calc" v-on:change="changeItem(it)" @focus="$event.target.select()" type="number" class="form-control form-control-sm" placeholder="calc x?">
                                             </div>
-                                    <div class="col-2 offset-7 text-center">{{purchasePrice * it.calc}}/{{salesPrice * it.calc}} {{currency}}</div>
+                                    <div class="col-2 offset-7 text-center">{{room.purchasePrice * it.calc}}/{{room.salesPrice * it.calc}} {{currency}}</div>
 
                                         </div>
                                     </div>
@@ -109,14 +109,25 @@ export default {
       console.log(item);
       const action = this.hotel.action.value.find((x) => x.room_id === item.room_id);
       const pacIndex = action.pac.findIndex((x) => x.adultSize === item.adultSize && x.childSize === item.childSize);
+      const pacItem = {
+        adultSize: item.adultSize,
+        childSize: item.childSize,
+        calc: item.calc,
+        age: item.age,
+      };
+      if (pacItem.age.length > 0) { pacItem.age = pacItem.age.map((x) => x.calc); }
+
       console.log(pacIndex);
       if (pacIndex > -1) {
-        action.pac[pacIndex] = item;
+        action.pac[pacIndex] = pacItem;
       } else {
-        action.pac.push(item);
+        action.pac.push(pacItem);
       }
       console.log(action);
       console.log(this.hotel.action);
+    },
+    save() {
+      console.log(this.hotel);
     },
   },
   mounted() {
