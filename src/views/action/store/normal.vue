@@ -54,7 +54,7 @@
                                             <div class="col-3 form-check form-switch form-switch-lg form-switch-success d-flex justify-content-center">
                                               <span>{{age.year ? 'year' : 'mount'}}</span>
                                             </div>
-                                            <div class="col-2 text-center">{{purchasePrice * age.calc}}€ ({{purchasePrice}})/{{salesPrice * age.calc}}€ ({{salesPrice}})</div>
+                                            <div class="col-2 text-center">{{purchasePrice * age.calc}}/{{salesPrice * age.calc}} {{currency}}</div>
                                         </div>
                                     </div>
                                     <div v-else class="col-10">
@@ -62,6 +62,8 @@
                                             <div class="col-3">
                                                 <input v-model="it.calc" @focus="$event.target.select()" type="number" class="form-control form-control-sm" placeholder="calc x?">
                                             </div>
+                                    <div class="col-2 offset-7 text-center">{{purchasePrice * it.calc}}/{{salesPrice * it.calc}} {{currency}}</div>
+
                                         </div>
                                     </div>
                                 </div>
@@ -88,6 +90,7 @@ export default {
       hotel: cloneDeep(this.data),
       purchasePrice: null,
       salesPrice: null,
+      currency: null,
     };
   },
   methods: {
@@ -98,8 +101,8 @@ export default {
       return pacItems.filter((x) => x.room_id === roomId);
     },
   },
-  created() {
-    console.log(this.hotel);
+  mounted() {
+    this.currency = this.hotel.contract.find((x) => this.hotel.action.contract.includes(x._id))?.currency;
   },
 
 };

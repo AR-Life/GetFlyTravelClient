@@ -58,7 +58,7 @@
 </div>
 <div class="row border-bottom border-primary mb-1" v-for="m in market" :key="m">
 <div class="col-1 d-flex align-items-center"><input type="checkbox" :id="m.contractId" v-model="action.contract" :value="m"/></div>
-<div class="col-5 d-flex align-items-center"><label :for="m.contractId"><span>{{m.market.mainMarketName}} » </span><span>{{m.market.mainMarketName}}</span></label></div>
+<div class="col-5 align-items-center d-flex"><table><tr v-for="marketInMarket in m.market" :key="marketInMarket"><td v-if="'subMarketName' in marketInMarket"><label :for="m.contractId"><span>{{marketInMarket.mainMarketName }} » </span><span>{{marketInMarket.subMarketName}}</span></label></td><td v-else><label :for="m.contractId"><span>Market Bulunamadı</span></label></td></tr></table></div>
 <div class="col-6 d-flex align-items-center"><span class="row"><span class="border-1 col-1" v-for="c in m.country" :key="c"><span :class="['fi fi-'+c.code]" :title="c.name"></span><span>{{c.code.toUpperCase()}}</span></span></span></div>
 </div>
 
@@ -118,10 +118,16 @@ export default {
   },
   computed: {
     validation() {
+      /*
+      // burası çalışıyor sadece debug modunda olduğumuzdan aktif etmiyoruz :)
       let show = this.action.type === null;
-      show = show === false ? show : this.action.salesDate.end === null && this.action.salesDate.end === null;
-      show = show === false ? show : this.action.checkInDate.end === null && this.action.checkInDate.end === null;
-      return show;
+      show = show === true ? show : this.action.salesDate.start === null;
+      show = show === true ? show : this.action.salesDate.end === null;
+      show = show === true ? show : this.action.checkInDate.start === null;
+      show = show === true ? show : this.action.checkInDate.end === null;
+      show = show === true ? show : this.action.contract.length < 1;
+      */
+      return false;
     },
     market() {
       return this.hotel.contract.map((c) => {
@@ -131,11 +137,10 @@ export default {
           country: [],
         };
         if (c.market.length > 0) {
-          returnData.market = this.markets.find((x) => c.market.includes(x._id));
+          returnData.market = this.markets.filter((x) => c.market.includes(x._id));
           returnData.country = this.country.filter((x) => c.country.includes(x._id));
         } else {
-          returnData.market.mainMarketName = 'Ana Market Bulunamadı';
-          returnData.market.mainSubMarketName = 'Alt Market Bulunamadı';
+          returnData.market.push({});
           returnData.country = this.country.filter((x) => c.country.includes(x._id));
         }
         return returnData;
@@ -147,7 +152,6 @@ export default {
       console.log(this.action);
     },
     save() {
-      console.log(this.action);
       const country = [];
       this.action.contract.map((x) => x.country.forEach((y) => {
         country.push(y);
@@ -158,6 +162,9 @@ export default {
       this.hotel.action = this.action;
       this.next(this.hotel, this.action.type);
     },
+  },
+  mounted() {
+    console.log(this.hotel);
   },
 };
 </script>

@@ -64,7 +64,6 @@ function edit(i, type) {
   data.editData = i;
   data.editType = '';
   data.editType = type;
-  console.log(type);
 }
 </script>
 <template>
