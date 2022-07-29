@@ -115,7 +115,7 @@ export default {
         calc: item.calc,
         age: item.age,
       };
-      if (pacItem.age.length > 0) { pacItem.age = pacItem.age.map((x) => x.calc); }
+      if (pacItem.age.length > 0) { pacItem.age = pacItem.age.map((x) => ({ calc: x.calc })); }
 
       console.log(pacIndex);
       if (pacIndex > -1) {
