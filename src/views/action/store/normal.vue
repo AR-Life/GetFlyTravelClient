@@ -106,25 +106,27 @@ export default {
       }));
     },
     changeItem(item) {
-      console.log(item);
-      const action = this.hotel.action.value.find((x) => x.room_id === item.room_id);
-      const pacIndex = action.pac.findIndex((x) => x.adultSize === item.adultSize && x.childSize === item.childSize);
-      const pacItem = {
-        adultSize: item.adultSize,
-        childSize: item.childSize,
-        calc: item.calc,
-        age: item.age,
-      };
-      if (pacItem.age.length > 0) { pacItem.age = pacItem.age.map((x) => ({ calc: x.calc })); }
+      if (this.hotel.action.room.findIndex((x) => item.room_id === x) > -1) {
+        console.log(item);
+        const action = this.hotel.action.value.find((x) => x.room_id === item.room_id);
+        const pacIndex = action.pac.findIndex((x) => x.adultSize === item.adultSize && x.childSize === item.childSize);
+        const pacItem = {
+          adultSize: item.adultSize,
+          childSize: item.childSize,
+          calc: item.calc,
+          age: item.age,
+        };
+        if (pacItem.age.length > 0) { pacItem.age = pacItem.age.map((x) => ({ calc: x.calc })); }
 
-      console.log(pacIndex);
-      if (pacIndex > -1) {
-        action.pac[pacIndex] = pacItem;
-      } else {
-        action.pac.push(pacItem);
+        console.log(pacIndex);
+        if (pacIndex > -1) {
+          action.pac[pacIndex] = pacItem;
+        } else {
+          action.pac.push(pacItem);
+        }
+        console.log(action);
+        console.log(this.hotel.action);
       }
-      console.log(action);
-      console.log(this.hotel.action);
     },
     save() {
       console.log(this.hotel);
