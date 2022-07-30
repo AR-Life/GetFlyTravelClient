@@ -107,7 +107,6 @@ export default {
     },
     changeItem(item) {
       if (this.hotel.action.room.findIndex((x) => item.room_id === x) > -1) {
-        console.log(item);
         const action = this.hotel.action.value.find((x) => x.room_id === item.room_id);
         const pacIndex = action.pac.findIndex((x) => x.adultSize === item.adultSize && x.childSize === item.childSize);
         const pacItem = {
@@ -125,8 +124,8 @@ export default {
     },
     save() {
       this.hotel.action.value = this.hotel.action.value.filter((x) => this.hotel.action.room.includes(x.room_id));
-      // save' e basılınca action içerisinde seçilen odalar dışındakileri silmek gerekiyor filter!!
-      console.log(this.hotel);
+      this.hotel.action.country = this.hotel.action.country.map((x) => x._id);
+      this.hotel.action.market = this.hotel.action.market.map((x) => x._id);
     },
   },
   mounted() {
