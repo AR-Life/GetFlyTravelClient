@@ -65,7 +65,8 @@
 <div class="col-lg-12 mt-2">
   <div class="hstack gap-2 justify-content-end">
     <button @click="close(hotel.id)" type="button" class="btn btn-light" data-bs-dismiss="modal"> Close </button>
-    <button :disabled="validation" @click="save" type="button" class="btn btn-primary"> Save and Close </button>
+    <button @click="customizeMarket()" type="button" class="btn btn-success"> Customize Market </button>
+    <button :disabled="validation" @click="save" type="button" class="btn btn-primary"> Next </button>
   </div>
 </div>
 </template>
@@ -158,6 +159,10 @@ export default {
       this.action.contract = this.action.contract.contractId;
       this.hotel.action = this.action;
       this.next(this.hotel, this.action.type);
+    },
+    customizeMarket() {
+      this.hotel.action = this.action;
+      this.next(this.hotel, 'market');
     },
   },
   mounted() {

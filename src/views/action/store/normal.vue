@@ -114,21 +114,18 @@ export default {
           adultSize: item.adultSize,
           childSize: item.childSize,
           calc: item.calc,
-          age: item.age,
+          age: item.age.length > 0 ? item.age.map((x) => ({ calc: x.calc })) : [],
         };
-        if (pacItem.age.length > 0) { pacItem.age = pacItem.age.map((x) => ({ calc: x.calc })); }
-
-        console.log(pacIndex);
         if (pacIndex > -1) {
           action.pac[pacIndex] = pacItem;
         } else {
           action.pac.push(pacItem);
         }
-        console.log(action);
-        console.log(this.hotel.action);
       }
     },
     save() {
+      this.hotel.action.value = this.hotel.action.value.filter((x) => this.hotel.action.room.includes(x.room_id));
+      // save' e basılınca action içerisinde seçilen odalar dışındakileri silmek gerekiyor filter!!
       console.log(this.hotel);
     },
   },
