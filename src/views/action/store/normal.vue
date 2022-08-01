@@ -81,6 +81,7 @@
 </div>
 </template>
 <script>
+import appAxios from '@/utils/appAxios';
 import { cloneDeep, groupBy } from 'lodash';
 
 export default {
@@ -124,8 +125,10 @@ export default {
     },
     save() {
       this.hotel.action.value = this.hotel.action.value.filter((x) => this.hotel.action.room.includes(x.room_id));
-      this.hotel.action.country = this.hotel.action.country.map((x) => x._id);
-      this.hotel.action.market = this.hotel.action.market.map((x) => x._id);
+      console.log(this.hotel.action);
+      appAxios.appAxios.post('/action/create', this.hotel.action).then((response) => {
+        console.log(response);
+      }).catch((e) => console.log(e));
     },
   },
   mounted() {
