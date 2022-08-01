@@ -13,6 +13,7 @@ import {
 } from 'vue';
 import infoVue from './store/info.vue';
 import normalVue from './store/normal.vue';
+import listVue from './store/list.vue';
 
 const data = reactive({
   title: 'Hotels',
@@ -127,6 +128,7 @@ function edit(i, type) {
   <modal>
     <infoVue v-if="data.editType === 'info'" :data="data.editData" :next="edit" :close="getHotel"/>
     <normalVue v-if="data.editType === 'normal'" :data="data.editData" :next="edit" :close="getHotel"/>
+    <listVue v-if="data.editType === 'list'" :data="data.editData" />
   </modal>
 </Layout>
 </template>

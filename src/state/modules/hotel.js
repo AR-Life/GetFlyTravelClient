@@ -39,6 +39,9 @@ export const mutations = {
         case 'contract':
           state.hotel[i].contract = data.contract;
           break;
+        case 'action':
+          // state.hotel[i].actions.findIndex((x) => x._id)
+          break;
         default:
           state.hotel[i].info = data.info;
           break;
