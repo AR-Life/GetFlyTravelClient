@@ -46,20 +46,59 @@
         </div>
     </div>
     </div>
-<div v-else class="row" v-for="action in hotel.contract.find((x) => x._id === selectedContract)?.action" :key="action">{{action}}</div>
+<div v-else>
+  <div class="row">
+    <div class="col-2"><input v-model="series" type="text" class="form-control form-control-sm" placeholder="S001" /></div>
+    <div class="col-2"><select v-model="type" class="form-select form-select-sm" placeholder="Type">
+        <option value="null"></option>
+        <option value="normal">Normal Action</option>
+        <option value="earlyBooking">Early Booking</option>
+        <option value="stopSale">Stop Sale</option>
+        <option value="freeSale">Free Sale</option>
+        <option value="dayPromotion">Day Promotion</option>
+        <option value="longStay">Long Stay</option>
+        <option value="honeyMoon">Honeymoon</option>
+      </select></div>
+    <div class="col-3 text-center">Sales Date</div>
+    <div class="col-3 text-center">CheckIn Date</div>
+    <div class="col-2 form-check form-switch form-check-success d-flex justify-content-center"><select v-model="stayAndArrival" class="form-select form-select-sm" placeholder="Arrival/Stay">
+        <option value="null"></option>
+        <option value="false">Arrival</option>
+        <option value="true">Stay</option>
+      </select></div>
+  </div>
+  <div class="row" v-for="action in actionList" :key="action">
+    <div class="col-2 text-center">{{action.series}}</div>
+    <div class="col-2 text-center">{{action.type}}</div>
+    <div class="col-3 text-center">{{getDate(action.salesDate.start)}} - {{getDate(action.salesDate.end)}}</div>
+    <div class="col-3 text-center">{{getDate(action.checkInDate.start)}} - {{getDate(action.checkInDate.end)}}</div>
+    <div class="col-2 text-center">{{action.stayAndArrival ? 'Stay': 'Arrival'}}</div>
+  </div>
+</div>
 </template>
 <script>
 import store from '@/state';
 import { cloneDeep } from 'lodash';
+import moment from 'moment';
 
 export default {
   props: ['data'],
   data() {
     return {
+      config: {
+        wrap: true, // set wrap to true only when using 'input-group'
+        altFormat: 'd/m/Y',
+        allowInput: true,
+        altInput: true,
+        dateFormat: 'Y-m-d',
+      },
       selectedContract: null,
       hotel: this.data,
       markets: store.getters['market/getMarket'],
       country: cloneDeep(store.getters['market/getCountry']),
+      series: null,
+      type: null,
+      stayAndArrival: null,
     };
   },
   computed: {
@@ -81,6 +120,21 @@ export default {
         return returnData;
       });
     },
+    actionData() { return this.hotel.contract.find((x) => x._id === this.selectedContract)?.action; },
+    actionList() {
+      let data = this.actionData;
+      if (this.series) {
+        data = data.filter((action) => (action.series.toLowerCase()).includes(this.series && this.series.toLowerCase()));
+      }
+      if (this.type) {
+        data = data.filter((action) => (action.type === this.type));
+      }
+      if (this.stayAndArrival != null) {
+        data = data.filter((action) => action.stayAndArrival.toString() === this.stayAndArrival);
+      }
+
+      return data;
+    },
   },
   methods: {
     actions(id) {
@@ -89,6 +143,9 @@ export default {
       }
       this.selectedContract = id;
       return false;
+    },
+    getDate(date) {
+      return moment(date).format('DD/MM/YYYY');
     },
   },
 

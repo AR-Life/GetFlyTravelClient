@@ -7,7 +7,7 @@
   </div>
   <div class="col-sm-4">
     <label class="form-label">Action Series</label>
-    <input v-model="action.actionSeries" type="text" class="form-control form-control-sm" placeholder="S001" />
+    <input v-model="action.series" type="text" class="form-control form-control-sm" placeholder="S001" />
   </div>
   <div class="col-sm-4">
     <div>
@@ -99,7 +99,7 @@ export default {
         contract: null,
         room: [],
         stayAndArrival: true,
-        actionSeries: null,
+        series: null,
         salesDate: {
           start: null,
           end: null,
