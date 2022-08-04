@@ -11,7 +11,7 @@
             <b>Ülke</b>
         </div>
     </div>
-    <div class="row border-bottom border-primary mb-1" v-for="m in market" :key="m">
+    <div  v-for="(m,i) in market" :key="m" :class="['row border-bottom border-primary pb-1',{ 'bg-light': i % 2 }]">
         <div class="col-1 d-flex align-items-center">
                   <a @click="actions(m.contractId)" role="presentation" class="link-primary">
                     <i class="ri-eye-line"></i>
@@ -47,7 +47,7 @@
     </div>
     </div>
 <div v-else>
-  <div class="row">
+  <div class="row border-bottom border-success pb-3">
     <div class="col-2"><input v-model="series" type="text" class="form-control form-control-sm" placeholder="S001" /></div>
     <div class="col-2"><select v-model="type" class="form-select form-select-sm" placeholder="Type">
         <option value="null"></option>
@@ -67,8 +67,8 @@
         <option value="true">Stay</option>
       </select></div>
   </div>
-  <div class="row" v-for="action in actionList" :key="action">
-    <div class="col-2 text-center">{{action.series}}</div>
+  <div v-for="(action, i) in actionList" :key="i" style="cursor:pointer" :class="['row border-bottom border-primary pb-1',{ 'bg-light': i % 2 }]" role="presentation" v-on:click="getAction(action)" >
+    <div class="col-2 text-center ">{{action.series}}</div>
     <div class="col-2 text-center">{{action.type}}</div>
     <div class="col-3 text-center">{{getDate(action.salesDate.start)}} - {{getDate(action.salesDate.end)}}</div>
     <div class="col-3 text-center">{{getDate(action.checkInDate.start)}} - {{getDate(action.checkInDate.end)}}</div>
@@ -146,6 +146,9 @@ export default {
     },
     getDate(date) {
       return moment(date).format('DD/MM/YYYY');
+    },
+    getAction(data) {
+      console.log(data);
     },
   },
 

@@ -56,7 +56,7 @@
   <div class="col-5"><b>Market</b></div>
   <div class="col-6"><b>Ülke</b></div>
 </div>
-<div class="row border-bottom border-primary mb-1" v-for="m in market" :key="m">
+<div v-for="(m,i) in market" :key="m" :class="['row border-bottom border-primary pb-1',{ 'bg-light': i % 2 }]">
 <div class="col-1 d-flex align-items-center"><input type="radio" :id="m.contractId" v-model="action.contract" :value="m"/></div>
 <div class="col-5 align-items-center d-flex"><table><tr v-for="marketInMarket in m.market" :key="marketInMarket"><td v-if="'subMarketName' in marketInMarket"><label :for="m.contractId"><span class="pe-2">({{m.currency}})</span><span>{{marketInMarket.mainMarketName }} » </span><span>{{marketInMarket.subMarketName}}</span></label></td><td v-else><label :for="m.contractId"><span class="pe-2">({{m.currency}})</span><span>Market Bulunamadı</span></label></td></tr></table></div>
 <div class="col-6 d-flex align-items-center"><span class="row"><span class="border-1 col-1" v-for="c in m.country" :key="c"><span :class="['fi fi-'+c.code]" :title="c.name"></span><span>{{c.code.toUpperCase()}}</span></span></span></div>
