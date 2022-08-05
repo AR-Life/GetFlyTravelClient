@@ -59,8 +59,8 @@
         <option value="longStay">Long Stay</option>
         <option value="honeyMoon">Honeymoon</option>
       </select></div>
-    <div class="col-3 text-center">Sales Date</div>
-    <div class="col-3 text-center">CheckIn Date</div>
+    <div class="col-3 text-center"><input type="date" v-model="salesDate" /></div>
+    <div class="col-3 text-center"><input type="date" v-model="checkInDate" /></div>
     <div class="col-2 form-check form-switch form-check-success d-flex justify-content-center"><select v-model="stayAndArrival" class="form-select form-select-sm" placeholder="Arrival/Stay">
         <option value="null"></option>
         <option value="false">Arrival</option>
@@ -99,6 +99,8 @@ export default {
       series: null,
       type: null,
       stayAndArrival: null,
+      salesDate: null,
+      checkInDate: null,
     };
   },
   computed: {
@@ -132,7 +134,12 @@ export default {
       if (this.stayAndArrival != null) {
         data = data.filter((action) => action.stayAndArrival.toString() === this.stayAndArrival);
       }
-
+      if (this.salesDate != null) {
+        data = data.filter((action) => moment(action.salesDate.start).format('DD/MM/YYYY') <= moment(this.salesDate).format('DD/MM/YYYY') && moment(this.salesDate).format('DD/MM/YYYY') <= moment(action.salesDate.end).format('DD/MM/YYYY'));
+      }
+      if (this.checkInDate != null) {
+        data = data.filter((action) => moment(action.checkInDate.start).format('DD/MM/YYYY') <= moment(this.checkInDate).format('DD/MM/YYYY') && moment(this.checkInDate).format('DD/MM/YYYY') <= moment(action.checkInDate.end).format('DD/MM/YYYY'));
+      }
       return data;
     },
   },
@@ -148,7 +155,7 @@ export default {
       return moment(date).format('DD/MM/YYYY');
     },
     getAction(data) {
-      console.log(data);
+      console.log(data, this.salesDate);
     },
   },
 
